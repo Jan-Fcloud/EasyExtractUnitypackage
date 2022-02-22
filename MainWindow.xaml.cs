@@ -8,7 +8,6 @@ using System.Windows.Input;
 
 namespace EasyExtractUnitypackage
 {
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>   
