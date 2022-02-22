@@ -37,10 +37,11 @@
         <Label x:Name="InfoText" Foreground="White" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
         <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2">
             <TextBlock Text="EasyExtractUnitypackge is a Program to Extract Unitypackages to get files from .Unitypackage Files." HorizontalAlignment="Center" Margin="5" FontSize="10" Foreground="White"/>
-            <Border Height="180" BorderThickness="1" BorderBrush="White">
-                <TextBlock VerticalAlignment="Bottom" Text="Search or just Drag Drop .Unitypackage" HorizontalAlignment="Center" Margin="5" FontSize="10" Foreground="White"/>
+            <Label Content="Adding multiple files, can take a while!" Foreground="Red" HorizontalAlignment="Center" FontSize="9" Background="Black"/>
+            <Border Height="160" BorderThickness="1" BorderBrush="White">
+                <TextBlock VerticalAlignment="Top" Text="Search or just Drag Drop .Unitypackage" HorizontalAlignment="Center" Margin="0,141,0,0" FontSize="10" Foreground="White"/>
             </Border>
-            <Button x:Name="searchUnitybtn" Click="searchUnitybtn_Click" Margin="5" Content="Search Unitypackage" Foreground="White" Width="150" FontSize="10" VerticalAlignment="Bottom"/>
+            <Button x:Name="searchUnitybtn" Click="searchUnitybtn_Click" Content="Search Unitypackage" Foreground="White" Width="150" FontSize="10"/>
         </StackPanel>
         <CheckBox x:Name="deletemalware" Click="deletemalware_Click" Grid.Column="1" Content="Delete .dll and .cs files" HorizontalAlignment="Left" Margin="30,19,0,0" Grid.Row="3" VerticalAlignment="Top" Width="142" IsChecked="True" Background="White" Foreground="White"/>
         <Label Grid.Column="1" Content="Note: no plugins/scripts will be usable&#xD;&#xA;(it is meant to protect against Unity malware)" HorizontalAlignment="Left" Margin="177,0,0,0" Grid.Row="3" VerticalAlignment="Center" Width="253" Grid.ColumnSpan="2" Foreground="Red" Height="44"/>

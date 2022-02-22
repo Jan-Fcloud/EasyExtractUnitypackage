@@ -13,13 +13,17 @@ namespace EasyExtractUnitypackage
     /// </summary>   
     public partial class MainWindow : Window
     {
-        public int removedfiles = 0;
+        private int removedfiles;
         private int assetCounter;
+        private int packagesExtracted;
         private bool deleteMalwareC = true;
         
         public MainWindow()
         {
             InitializeComponent();
+            removedfiles = 0;
+            assetCounter = 0;
+            packagesExtracted = 0;
         }
 
         private void Window_DragEnter(object sender, DragEventArgs e)
@@ -38,19 +42,27 @@ namespace EasyExtractUnitypackage
 
         private void Window_Drop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (System.IO.Path.GetExtension(files[0]).Equals(".unitypackage"))
-            {
-                ExtractUnitypackage(files[0]);
-                Mouse.OverrideCursor = Cursors.Arrow;
-            }
-            else
-            {
-                InfoText.Content = "not an .unitypackage";
-                Mouse.OverrideCursor = Cursors.No;
-            }
-        }
 
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                if (System.IO.Path.GetExtension(file).Equals(".unitypackage"))
+                {
+                    ExtractUnitypackage(file);
+                    Mouse.OverrideCursor = Cursors.Arrow;
+                }
+                else
+                {
+                    InfoText.Content = "not an .unitypackage";
+                    Mouse.OverrideCursor = Cursors.No;
+                }
+
+            }
+
+            MessageBox.Show(packagesExtracted + " .unitypackage files proccessed\n" +  assetCounter + " Files Extracted \n" + removedfiles + " Files Removed", "Unitypackage Extract & Clean");
+            //InfoText.Content = "Completed";
+
+        }
         private void ExtractUnitypackage(string filename)
         {
 
@@ -74,38 +86,29 @@ namespace EasyExtractUnitypackage
 
             if (deleteMalwareC)
             {
-                // CUSTOM START
             string root = targetFolder;
 
-            // Get all subdirectories
 
             string[] subdirectoryEntries = Directory.GetDirectories(root);
 
-            // Loop through them to see if they have any other subdirectories
 
             foreach (string subdirectory in subdirectoryEntries) {
 
                 LoadSubDirs(subdirectory);
             }
-            // CUSTOM END
 
             }
 
 
             Directory.Delete(tempFolder, true);
-            MessageBox.Show(assetCounter + " Files EasyExtracted and " + removedfiles + " files removed! ", "EasyExtractUnitypackage & Clean");
-            removedfiles = 0;
-            InfoText.Content = "Completed";
+            packagesExtracted++;
             Mouse.OverrideCursor = Cursors.Arrow;
             
         }
 
-        // CUSTOM START
         void LoadSubDirs(string dir)
 
         {
-
-            //Console.WriteLine(dir);
 
             string[] subdirectoryEntries = Directory.GetDirectories(dir);
 
@@ -115,7 +118,7 @@ namespace EasyExtractUnitypackage
 
                 foreach (string f in Directory.GetFiles(subdirectory))
                 {
-                    if (f.EndsWith(".dll") || f.EndsWith(".cs"))
+                    if (f.EndsWith(".dll") || f.EndsWith(".cs") || f.EndsWith(".dll.meta"))
                     {
                         File.Delete(f);
                         removedfiles++;
@@ -128,7 +131,6 @@ namespace EasyExtractUnitypackage
             }
 
         }
-        // CUSTOM END
 
         public void ExtractTGZ(string gzArchiveName, string destFolder)
         {
@@ -146,7 +148,6 @@ namespace EasyExtractUnitypackage
 
         private void ProcessExtracted(string tempFolder, string targetFolder)
         {
-            assetCounter = 0;
             foreach (string d in Directory.EnumerateDirectories(tempFolder))
             {
                 string relativePath = "";
