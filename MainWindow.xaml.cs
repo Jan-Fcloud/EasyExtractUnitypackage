@@ -8,13 +8,16 @@ using System.Windows.Input;
 
 namespace EasyExtractUnitypackage
 {
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>   
     public partial class MainWindow : Window
     {
+        public int removedfiles = 0;
         private int assetCounter;
-
+        private bool deleteMalwareC = true;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -70,12 +73,63 @@ namespace EasyExtractUnitypackage
             ExtractTGZ(filename, tempFolder);
             ProcessExtracted(tempFolder, targetFolder);
 
+            if (deleteMalwareC)
+            {
+                // CUSTOM START
+            string root = targetFolder;
+
+            // Get all subdirectories
+
+            string[] subdirectoryEntries = Directory.GetDirectories(root);
+
+            // Loop through them to see if they have any other subdirectories
+
+            foreach (string subdirectory in subdirectoryEntries) {
+
+                LoadSubDirs(subdirectory);
+            }
+            // CUSTOM END
+
+            }
+
+
             Directory.Delete(tempFolder, true);
-            MessageBox.Show(assetCounter + " Files EasyExtracted", "EasyExtractUnitypackage");
+            MessageBox.Show(assetCounter + " Files EasyExtracted and " + removedfiles + " files removed! ", "EasyExtractUnitypackage & Clean");
+            removedfiles = 0;
             InfoText.Content = "Completed";
             Mouse.OverrideCursor = Cursors.Arrow;
             
         }
+
+        // CUSTOM START
+        void LoadSubDirs(string dir)
+
+        {
+
+            //Console.WriteLine(dir);
+
+            string[] subdirectoryEntries = Directory.GetDirectories(dir);
+
+            foreach (string subdirectory in subdirectoryEntries)
+
+            {
+
+                foreach (string f in Directory.GetFiles(subdirectory))
+                {
+                    if (f.EndsWith(".dll") || f.EndsWith(".cs"))
+                    {
+                        File.Delete(f);
+                        removedfiles++;
+                    }
+
+                }
+
+                LoadSubDirs(subdirectory);
+
+            }
+
+        }
+        // CUSTOM END
 
         public void ExtractTGZ(string gzArchiveName, string destFolder)
         {
@@ -135,6 +189,18 @@ namespace EasyExtractUnitypackage
             }
         }
 
+        private void deletemalware_Click(object sender, System.EventArgs e)
+        {
+            if (deletemalware.IsChecked == true)
+            {
+                deleteMalwareC = true;
+            }
+            else if(deletemalware.IsChecked == false)
+            {
+                deleteMalwareC = false;
+            }
+        }
+
         private void searchUnitybtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog();
@@ -146,6 +212,11 @@ namespace EasyExtractUnitypackage
                 return;
             }
             ExtractUnitypackage(openFile.FileName);
+        }
+
+        private void deletemalware_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

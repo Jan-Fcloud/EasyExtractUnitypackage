@@ -11,7 +11,7 @@
         AllowDrop="True"
         DragEnter="Window_DragEnter"
         Drop="Window_Drop"
-        Title="EasyExtractUnitypackage"
+        Title="Unitypackage Extract and Clean"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="True"
@@ -42,5 +42,7 @@
             </Border>
             <Button x:Name="searchUnitybtn" Click="searchUnitybtn_Click" Margin="5" Content="Search Unitypackage" Foreground="White" Width="150" FontSize="10" VerticalAlignment="Bottom"/>
         </StackPanel>
+        <CheckBox x:Name="deletemalware" Click="deletemalware_Click" Grid.Column="1" Content="Delete .dll and .cs files" HorizontalAlignment="Left" Margin="30,19,0,0" Grid.Row="3" VerticalAlignment="Top" Width="142" IsChecked="True" Background="White" Foreground="White"/>
+        <Label Grid.Column="1" Content="Note: no plugins/scripts will be usable&#xD;&#xA;(it is meant to protect against Unity malware)" HorizontalAlignment="Left" Margin="177,0,0,0" Grid.Row="3" VerticalAlignment="Center" Width="253" Grid.ColumnSpan="2" Foreground="Red" Height="44"/>
     </Grid>
 </Window>
