@@ -5,6 +5,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.GZip;
 using Microsoft.Win32;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace EasyExtractUnitypackage
 {
@@ -17,6 +18,11 @@ namespace EasyExtractUnitypackage
         private int assetCounter;
         private int packagesExtracted;
         private bool deleteMalwareC = true;
+        private int noAccess;
+        private bool deleteUnityP = false;
+        //private bool noteFails = false;
+        //public string failedFiles = "";
+
         
         public MainWindow()
         {
@@ -24,6 +30,7 @@ namespace EasyExtractUnitypackage
             removedfiles = 0;
             assetCounter = 0;
             packagesExtracted = 0;
+            noAccess = 0;
         }
 
         private void Window_DragEnter(object sender, DragEventArgs e)
@@ -59,7 +66,7 @@ namespace EasyExtractUnitypackage
 
             }
 
-            MessageBox.Show(packagesExtracted + " .unitypackage files proccessed\n" +  assetCounter + " Files Extracted \n" + removedfiles + " Files Removed", "Unitypackage Extract & Clean");
+            MessageBox.Show(packagesExtracted + " .unitypackage files proccessed\n" +  assetCounter + " Files Extracted \n" + removedfiles + " Files Removed\n" + noAccess + " Errors (File Access Error)", "Unitypackage Extract & Clean");
             //InfoText.Content = "Completed";
 
         }
@@ -84,6 +91,10 @@ namespace EasyExtractUnitypackage
             ExtractTGZ(filename, tempFolder);
             ProcessExtracted(tempFolder, targetFolder);
 
+            /*if (noteFails)
+            {
+                File.WriteAllText("FAILED.txt", failedFiles);
+            }*/
             if (deleteMalwareC)
             {
             string root = targetFolder;
@@ -94,7 +105,18 @@ namespace EasyExtractUnitypackage
 
             foreach (string subdirectory in subdirectoryEntries) {
 
-                LoadSubDirs(subdirectory);
+
+                    foreach (string f in Directory.GetFiles(subdirectory))
+                    {
+                        if (f.Contains(".dll") || f.Contains(".cs"))
+                        {
+                            File.Delete(f);
+                            removedfiles++;
+                        }
+
+                    }
+
+                    LoadSubDirs(subdirectory);
             }
 
             }
@@ -102,6 +124,10 @@ namespace EasyExtractUnitypackage
 
             Directory.Delete(tempFolder, true);
             packagesExtracted++;
+            if (deleteUnityP)
+            {
+                File.Delete(filename);
+            }
             Mouse.OverrideCursor = Cursors.Arrow;
             
         }
@@ -118,7 +144,7 @@ namespace EasyExtractUnitypackage
 
                 foreach (string f in Directory.GetFiles(subdirectory))
                 {
-                    if (f.EndsWith(".dll") || f.EndsWith(".cs") || f.EndsWith(".dll.meta"))
+                    if (f.Contains(".dll") || f.Contains(".cs"))
                     {
                         File.Delete(f);
                         removedfiles++;
@@ -139,7 +165,14 @@ namespace EasyExtractUnitypackage
             Stream gzipStream = new GZipInputStream(inStream);
 
             TarArchive tarArchive = TarArchive.CreateInputTarArchive(gzipStream);
-            tarArchive.ExtractContents(destFolder);
+            try { 
+                tarArchive.ExtractContents(destFolder);
+            }
+            catch (System.Exception ex)
+            {
+                noAccess++;
+            }
+            
             tarArchive.Close();
 
             gzipStream.Close();
@@ -183,7 +216,11 @@ namespace EasyExtractUnitypackage
                 }
                 catch (System.Exception ex)
                 {
-                    MessageBox.Show("Error", ex.Message);
+                    // MessageBox.Show("Error", ex.Message);
+                    noAccess++;
+                    //failedFiles += targetFolder + "\n";
+
+
                 }
                 
             }
@@ -214,9 +251,33 @@ namespace EasyExtractUnitypackage
             ExtractUnitypackage(openFile.FileName);
         }
 
-        private void deletemalware_Click_1(object sender, RoutedEventArgs e)
+        private void updelete_Click(object sender, RoutedEventArgs e)
         {
+            if (updelete.IsChecked == true)
+            {
+                deleteUnityP = true;
+            }
+            else if (updelete.IsChecked == false)
+            {
+                deleteUnityP = false;
+            }
+        }
 
+        private void notefailed_Click(object sender, RoutedEventArgs e)
+        {
+            /*if (notefailed.IsChecked == true)
+            {
+                noteFails = true;
+            }
+            else if (notefailed.IsChecked == false)
+            {
+                noteFails = false;
+            }*/
+        }
+
+        private void information_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("You can't avoid extraction errors.\nLuckily, the files that you lose from them likely aren't mandatory.\nSo any models SHOULD be fine!\nBut mostly things should extract normally.\nIt mostly happens for corrupt data and such...\n\n\nNote: Adding packages in the double or tripple diggits will take a while.", "UEaC V1.1.1 Information");
         }
     }
 }
