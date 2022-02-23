@@ -1,7 +1,7 @@
 # Unitypackage-Extract-and-Clean
 Unitypackage Extract and Clean is a Program to get files out of a .unitypackage without importing them into unity and optionally delete all .dll and .cs files in the exported package folder.
 
-![EasyExtractUnitypackage_3WH4nKhlcE](https://user-images.githubusercontent.com/47220014/155193809-e1b32f6c-99ff-4d16-9537-010a6d88fbc5.gif)
+![UEaC_WAkdbHxT0g](https://user-images.githubusercontent.com/47220014/155364073-3a45d745-0f7d-42b3-b03e-ed942a97447d.gif)
 
 This program is a fork created from EasyExtractUnitypackage which is originally made by HakuSystems, but this one includes a neat feature of deleting .dll and .cs files from it.
 
